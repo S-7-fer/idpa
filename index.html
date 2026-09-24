@@ -376,12 +376,16 @@ async function loadRows(){
   if(!SCRIPT_URL){rows=lsGet(LS,[]);renderResults();setMsg('res-msg','Keine Google-Tabelle verbunden: Es werden nur die Ergebnisse von diesem Gerät gezeigt.');return}
   const pw=$('pw').value.trim();if(!pw){setMsg('res-msg','Bitte das Passwort eingeben.');return}
   setMsg('res-msg','Lade …');
-  try{
-    const r=await fetch(SCRIPT_URL+'?pw='+encodeURIComponent(pw));const j=await r.json();
-    if(!j.ok){setMsg('res-msg',j.error==='passwort'?'Das Passwort stimmt nicht.':'Laden hat nicht geklappt.');return}
-    lsSet(PWKEY,pw);rows=j.rows.filter(x=>x.id!=='').map(fromFlat);renderResults();
-    setMsg('res-msg','Stand: '+new Date().toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'}));
-  }catch(e){setMsg('res-msg','Keine Verbindung zur Google-Tabelle. Internet prüfen und «Aktualisieren» drücken.')}
+  if(!/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec$/.test(SCRIPT_URL)){setMsg('res-msg','Die SCRIPT_URL in index.html sieht falsch aus. Sie muss mit https://script.google.com/macros/s/ beginnen und auf /exec enden.');return}
+  let r;
+  try{r=await fetch(SCRIPT_URL+'?pw='+encodeURIComponent(pw))}
+  catch(e){setMsg('res-msg','Google-Skript nicht erreichbar. Meist steht der Zugriff der Web-App nicht auf «Jeder». Siehe README, Abschnitt Fehlersuche.');return}
+  let j;
+  try{j=await r.json()}
+  catch(e){setMsg('res-msg','Das Google-Skript antwortet mit einem Fehler statt mit Daten. Öffne die Web-App-URL mit ?pw=… direkt im Browser, dort steht der Grund.');return}
+  if(!j.ok){setMsg('res-msg',j.error==='passwort'?'Das Passwort stimmt nicht.':'Laden hat nicht geklappt ('+j.error+').');return}
+  lsSet(PWKEY,pw);rows=j.rows.filter(x=>x.id!=='').map(fromFlat);renderResults();
+  setMsg('res-msg','Stand: '+new Date().toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'}));
 }
 async function deleteRecord(id){
   if(!SCRIPT_URL){lsSet(LS,lsGet(LS,[]).filter(r=>r.id!==id));rows=lsGet(LS,[]);renderResults();return}
