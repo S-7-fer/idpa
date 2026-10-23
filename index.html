@@ -571,7 +571,7 @@ function renderResults(){
 function mmss(s){if(s==null)return'–';return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
 function esc(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 function csv(){
-  const head=['datum','klasse','kuerzel','gruppe','probe','a1_leer','a1_richtig','a1_ausgefuellt','a1_note','a1_bild','a1_zeit_s','wahl','wert','a2_typ','a2_ergebnis','a2_geloest','a2_zeit_s','wahl_zeit_s'];
+  const head=['datum','klasse','kuerzel','gruppe','probe','a1_leer','a1_richtig','a1_ausgefuellt','a1_note','a1_bild','a1_zeit_s','wahl','wahl_zeit_s','wert','a2_typ','a2_ergebnis','a2_geloest','a2_zeit_s'];
   const q=v=>{v=v==null?'':String(v);return /[;"\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
   const lines=rows.slice().sort((a,b)=>(a.datum||'').localeCompare(b.datum||'')).map(r=>{const a=r.a1||{},b=r.a2||{};
     return [r.datum,r.klasse,r.kuerzel,r.gruppe,r.probe?1:0,a.leer,a.richtig,a.ausgefuellt,a.note,a.bild,a.zeitSek,r.wahl,r.wert,b.typ,b.ergebnis,b.geloest==null?'':b.geloest?1:0,b.zeitSek,r.wahlZeitSek].map(q).join(';')});
