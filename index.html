@@ -407,8 +407,7 @@ function arm(btn,label){btn.classList.add('armed');btn.dataset.orig=btn.dataset.
 function disarm(btn){btn.classList.remove('armed');if(btn.dataset.orig){btn.textContent=btn.dataset.orig;delete btn.dataset.orig}}
 $('abort').onclick=()=>{const b=$('abort');if(!b.classList.contains('armed')){arm(b,'Wirklich abbrechen?');return}sess=null;route()};
 
-try{const k=localStorage.getItem('bon_kl');if(k)$('klasse').value='6'}catch(e){}
-
+$('klasse').value='6';
 /* ---------- Ablauf ---------- */
 let sess=null;
 $('start').onclick=()=>{
