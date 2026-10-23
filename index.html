@@ -332,8 +332,9 @@ const SCRIPT_URL='https://script.google.com/macros/s/AKfycbxJpWcrzrPTd3kIKwrS1DG
 
 const LS='bon_rows_v1',OUTBOX='bon_outbox_v1',PWKEY='bon_pw';
 let rows=[],flushing=false;
-const lsGet=(k,d)=>{try{return JSON.parse(localStorage.getItem(k)||'null')??d}catch(e){return d}};
-const lsSet=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}};
+const MEM={};
+const lsGet=(k,d)=>{try{return JSON.parse((k in MEM?MEM[k]:localStorage.getItem(k))||'null')??d}catch(e){return d}};
+const lsSet=(k,v)=>{const s=JSON.stringify(v);MEM[k]=s;try{localStorage.setItem(k,s)}catch(e){}};
 const FLAT=['id','datum','klasse','kuerzel','gruppe','probe','a1_leer','a1_richtig','a1_ausgefuellt','a1_note','a1_bild','a1_zeit_s','wahl','wert','a2_typ','a2_ergebnis','a2_geloest','a2_zeit_s'];
 function toFlat(r){const a=r.a1||{},b=r.a2||{};return{id:r.id,datum:r.datum,klasse:r.klasse,kuerzel:r.kuerzel,gruppe:r.gruppe,probe:r.probe?1:0,
   a1_leer:a.leer,a1_richtig:a.richtig,a1_ausgefuellt:a.ausgefuellt,a1_note:a.note,a1_bild:a.bild,a1_zeit_s:a.zeitSek,wahl:r.wahl,wert:r.wert,
@@ -345,7 +346,7 @@ function fromFlat(f){return{id:String(f.id),datum:f.datum?new Date(f.datum).toIS
   wahl:f.wahl,wert:num(f.wert),a2:f.a2_typ?{typ:f.a2_typ,ergebnis:f.a2_ergebnis,geloest:yes(f.a2_geloest),zeitSek:num(f.a2_zeit_s)}:null}}
 
 async function post(body){
-  const r=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body)});
+  const r=await fetch(SCRIPT_URL,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(body),signal:window.AbortSignal&&AbortSignal.timeout?AbortSignal.timeout(60000):undefined});
   const j=await r.json();if(!j.ok)throw new Error(j.error||'Fehler');return j;
 }
 // Jedes Ergebnis kommt zuerst in einen Ausgang auf dem Gerät und wird von dort übertragen.
@@ -361,6 +362,7 @@ async function flush(){
   }catch(e){}finally{flushing=false;renderPending()}
 }
 setInterval(flush,20000);window.addEventListener('online',flush);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)flush()});
 function renderPending(){
   const n=SCRIPT_URL?lsGet(OUTBOX,[]).length:0,el=$('setup-msg');
   if(el&&!$('s-setup').hidden)el.textContent=n?`${n} Ergebnis${n>1?'se':''} noch nicht übertragen. Wird automatisch nachgeschickt, sobald Internet da ist.`:'';
@@ -582,6 +584,7 @@ function route(){
   MODE=null;$('brand-sub').textContent='Bild oder Note';show('links');
 }
 window.addEventListener('hashchange',()=>{if(!sess)route()});
+window.addEventListener('beforeunload',e=>{if(sess&&$('s-done').hidden){e.preventDefault();e.returnValue=''}});
 route();
 </script>
 
