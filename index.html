@@ -166,7 +166,6 @@ td.num{text-align:right}
           <label class="f">Klasse<input type="text" id="klasse" placeholder="z. B. 4b" autocomplete="off"></label>
           <label class="f">Kürzel des Kindes<input type="text" id="kuerzel" placeholder="z. B. K07" autocomplete="off"></label>
         </div>
-        <label class="check"><input type="checkbox" id="probe"> Probedurchlauf (wird gespeichert, aber nicht ausgewertet)</label>
         <div><button class="btn big" id="start">Experiment starten</button></div>
         <p class="msg" id="setup-msg"></p>
       </div>
@@ -416,7 +415,7 @@ $('start').onclick=()=>{
   if(!kuerzel){setMsg('setup-msg','Bitte ein Kürzel für das Kind eintragen.');$('kuerzel').focus();return}
   try{localStorage.setItem('bon_kl',klasse)}catch(e){}
   setMsg('setup-msg','');
-  sess={gruppe,klasse,kuerzel,probe:$('probe').checked,id:null};
+  sess={gruppe,klasse,kuerzel,probe:false,id:null};
   show('intro1');
 };
 $('go1').onclick=()=>startSudoku('a1');
