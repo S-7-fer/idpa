@@ -33,11 +33,11 @@ header.top{display:flex;align-items:baseline;justify-content:space-between;gap:1
 header.top.kidhead{border-bottom:0;justify-content:flex-end;margin-bottom:12px}
 .brand{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
 .brand h1{font-size:1.1rem;font-weight:400;letter-spacing:.04em;color:var(--ink)}
-.colors{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;max-width:560px}
-.colors button{width:38px;height:38px;border-radius:50%;border:1px solid var(--line-mid);cursor:pointer;padding:0}
-.colors button[aria-pressed="true"]{outline:2px solid var(--line-strong);outline-offset:3px}
-.paint{width:100%;max-width:640px;height:auto;background:#fff;border:1px solid var(--line-mid);touch-action:manipulation}
-.paint g:first-child > *{cursor:pointer}
+.levels{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.levels button{font:inherit;font-size:.95rem;padding:8px 18px;border:1px solid var(--line-mid);border-radius:var(--radius);background:var(--card);color:var(--ink);cursor:pointer}
+.levels button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--card)}
+.btnrow{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.cell.wrong{color:var(--red);background:#F6E3DF}
 .abort{border:0;background:transparent;color:var(--muted);opacity:.55;font:inherit;font-size:.78rem;padding:4px 8px;cursor:pointer}
 .abort.armed{color:var(--red);opacity:1}
 
@@ -102,9 +102,19 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ochre);outline-offs
 .choice:hover{border-color:var(--ink);background:#fff}
 .choice b{font-size:1.15rem;font-weight:400;color:var(--ink)}
 .choice small{color:var(--muted);font-size:.88rem}
-.mini{display:grid;border:1px solid var(--line-strong)}
-.mini i{border-right:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--card)}
-.mini i.f{background:var(--ink-soft)}
+.choice .ex{font-size:1.2rem;font-weight:400;font-variant-numeric:tabular-nums;color:var(--text)}
+.mathlist{display:grid;gap:10px;width:100%;max-width:560px}
+.task{display:grid;grid-template-columns:1.6em 1fr 7em 2.2em;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:10px 14px;text-align:left}
+.task .nr{color:var(--muted);font-size:.85rem}
+.task .q{font-size:1.2rem;font-weight:400;font-variant-numeric:tabular-nums}
+.task input{width:100%;font-size:1.2rem;text-align:right}
+.task .u{color:var(--muted)}
+.memory,.slide{display:grid;grid-template-columns:repeat(4,min(76px,20vw));gap:8px}
+.memory button{aspect-ratio:1;font-size:2rem;border:1px solid var(--line-mid);border-radius:var(--radius);background:var(--ink);cursor:pointer;padding:0}
+.memory button.up{background:var(--card)}
+.memory button.found{background:var(--sage-soft);border-color:var(--sage)}
+.slide button{aspect-ratio:1;font:inherit;font-size:1.5rem;font-weight:400;border:1px solid var(--line-mid);border-radius:var(--radius);background:var(--card);color:var(--ink);cursor:pointer;padding:0}
+.slide button.empty{visibility:hidden}
 
 /* Auswertung */
 .sumgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
@@ -177,16 +187,16 @@ td.num{text-align:right}
   <!-- INTRO 1 -->
   <section id="s-intro1" class="stack kid" hidden>
     <span class="banner graded">Diese Aufgabe wird bewertet</span>
-    <h2>Löse das Sudoku!</h2>
+    <h2>Löse die Rechnungen!</h2>
+    <p class="rules">Schreibe jeweils das Ergebnis ins Feld. Kommazahlen schreibst du mit Komma, zum Beispiel 2,5.</p>
     <button class="btn big" id="go1">Los geht's</button>
   </section>
 
-  <!-- TASK (sudoku, both rounds) -->
-  <section id="s-sudoku" class="stack kid" hidden>
-    <span class="banner" id="sd-banner"></span>
-    <div class="board" id="board"></div>
-    <div class="pad" id="pad"></div>
-    <button class="btn ghost big" id="sd-done">Ich bin fertig</button>
+  <!-- TASK (Mathe, beide Runden) -->
+  <section id="s-math" class="stack kid" hidden>
+    <span class="banner" id="m-banner"></span>
+    <div class="mathlist" id="mathlist"></div>
+    <button class="btn ghost big" id="m-done">Ich bin fertig</button>
   </section>
 
   <!-- FEEDBACK -->
@@ -206,35 +216,24 @@ td.num{text-align:right}
   <!-- DONE -->
   <section id="s-done" class="stack kid" hidden>
     <h2>Vielen Dank fürs Mitmachen!</h2>
-    <p class="rules">Bis die anderen fertig sind, darfst du hier das Bild ausmalen.</p>
-    <p class="msg" id="done-msg"></p>
-    <div class="colors" id="colors"></div>
-    <svg class="paint" id="paint" viewBox="0 0 400 300" role="img" aria-label="Ausmalbild: Haus mit Baum und Blumen">
-      <g fill="#fff" stroke="var(--line-strong)" stroke-width="1.2" stroke-linejoin="round">
-        <rect x="1" y="1" width="398" height="298"/>
-        <circle cx="335" cy="58" r="28"/>
-        <path d="M48 92 a18 18 0 0 1 30 -16 a24 24 0 0 1 44 4 a17 17 0 0 1 8 30 h-76 a14 14 0 0 1 -6 -18z"/>
-        <path d="M232 60 a14 14 0 0 1 24 -10 a18 18 0 0 1 32 6 a12 12 0 0 1 4 22 h-56 a11 11 0 0 1 -4 -18z"/>
-        <path d="M1 212 Q100 176 200 204 T399 192 V299 H1Z"/>
-        <path d="M172 250 Q162 276 146 299 H222 Q206 276 196 250Z"/>
-        <rect x="212" y="100" width="16" height="32"/>
-        <path d="M108 152 L180 96 L252 152Z"/>
-        <rect x="120" y="152" width="120" height="98"/>
-        <rect x="167" y="198" width="28" height="52"/>
-        <rect x="134" y="170" width="26" height="24"/>
-        <rect x="202" y="170" width="26" height="24"/>
-        <circle cx="180" cy="128" r="11"/>
-        <rect x="302" y="186" width="14" height="52"/>
-        <circle cx="309" cy="164" r="32"/>
-        <circle cx="46" cy="232" r="7"/><circle cx="46" cy="222" r="6"/><circle cx="56" cy="232" r="6"/><circle cx="46" cy="242" r="6"/><circle cx="36" cy="232" r="6"/><circle cx="46" cy="232" r="4"/>
-        <circle cx="82" cy="258" r="6"/><circle cx="82" cy="248" r="6"/><circle cx="92" cy="258" r="6"/><circle cx="82" cy="268" r="6"/><circle cx="72" cy="258" r="6"/><circle cx="82" cy="258" r="4"/>
-        <circle cx="352" cy="252" r="6"/><circle cx="352" cy="242" r="6"/><circle cx="362" cy="252" r="6"/><circle cx="352" cy="262" r="6"/><circle cx="342" cy="252" r="6"/><circle cx="352" cy="252" r="4"/>
-      </g>
-      <g stroke="var(--line-strong)" stroke-width="1.2" stroke-linecap="round" fill="none" pointer-events="none">
-        <path d="M335 18 V24 M335 92 V98 M295 58 H301 M369 58 H375 M307 30 l4 4 M359 82 l4 4 M363 30 l-4 4 M311 82 l-4 4"/>
-        <path d="M147 170 V194 M134 182 H160 M215 170 V194 M202 182 H228 M189 224 h.1"/>
-      </g>
-    </svg>
+    <p class="rules">Bis die anderen fertig sind, darfst du hier noch etwas spielen. Es wird nichts gespeichert.</p>
+    <div class="levels" id="fz-tabs"></div>
+    <div class="stack" id="fz-sudoku" style="align-items:center">
+      <div class="board" id="fz-board"></div>
+      <div class="pad" id="fz-pad"></div>
+      <div class="btnrow"><button class="btn ghost" id="fz-check">Prüfen</button><button class="btn ghost" id="fz-new">Neues Sudoku</button></div>
+      <p class="msg" id="fz-msg"></p>
+    </div>
+    <div class="stack" id="fz-memory" style="align-items:center" hidden>
+      <div class="memory" id="memo"></div>
+      <div class="btnrow"><button class="btn ghost" id="memo-new">Neu mischen</button></div>
+      <p class="msg" id="memo-msg"></p>
+    </div>
+    <div class="stack" id="fz-slide" style="align-items:center" hidden>
+      <div class="slide" id="slide"></div>
+      <div class="btnrow"><button class="btn ghost" id="sl-new">Neu mischen</button></div>
+      <p class="msg" id="sl-msg"></p>
+    </div>
   </section>
 
   <!-- RESULTS -->
@@ -265,15 +264,15 @@ td.num{text-align:right}
       </table>
     </div>
     <div class="card">
-      <h3>Smiley-Stufen</h3>
-      <p class="small muted">So wurde jede Note in der Gruppe Bild als Smiley angezeigt.</p>
+      <h3>Pflanzen-Stufen</h3>
+      <p class="small muted">So wurde jede Note in der Gruppe Bild als Pflanze angezeigt.</p>
       <div class="faces" id="faces"></div>
     </div>
   </section>
 </div>
 
 <script>
-/* ---------- Sudoku-Generator (deterministisch: alle Kinder bekommen dieselben Rätsel) ---------- */
+/* ---------- Sudoku-Generator (nur noch für das freie Sudoku am Schluss) ---------- */
 function rng(seed){return function(){seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
 function shuffle(a,r){for(let i=a.length-1;i>0;i--){const j=Math.floor(r()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 const range=n=>[...Array(n).keys()];
@@ -304,37 +303,62 @@ function makeSudoku({n,br,bc,clues,seed}){
   }
   return {n,br,bc,sol,puz};
 }
-const LEVELS={
-  a1:         {n:6,br:2,bc:3,clues:20,seed:1017},
-  leichter:   {n:4,br:2,bc:2,clues:8, seed:2029},
-  gleich:     {n:6,br:2,bc:3,clues:20,seed:3041},
-  schwieriger:{n:9,br:3,bc:3,clues:38,seed:4057},
+/* ---------- Matheaufgaben (fest: alle Kinder bekommen dieselben) ----------
+   Jede Aufgabe: [Rechnung, Lösung, Einheit hinter dem Feld (optional)]. */
+const MATH={
+  a1:[
+    ['348 + 576 =',924],['1000 − 637 =',363],['24 · 6 =',144],['144 : 12 =',12],
+    ['7 · 35 =',245],['2,5 + 3,75 =',6.25],['10 − 4,3 =',5.7],['0,4 · 5 =',2],
+    ['3/4 von 20 =',15],['25 % von 80 =',20],['4,2 m =',420,'cm'],['3 · (8 + 7) =',45],
+  ],
+  leichter:[
+    ['45 + 38 =',83],['92 − 47 =',45],['7 · 8 =',56],['63 : 9 =',7],
+    ['150 + 250 =',400],['6 · 12 =',72],['1/2 von 30 =',15],['2 m =',200,'cm'],
+  ],
+  gleich:[
+    ['427 + 389 =',816],['900 − 548 =',352],['32 · 4 =',128],['96 : 8 =',12],
+    ['1,5 + 2,75 =',4.25],['8 − 2,6 =',5.4],['1/4 von 36 =',9],['10 % von 70 =',7],
+  ],
+  schwieriger:[
+    ['1248 + 2976 =',4224],['23 · 17 =',391],['864 : 24 =',36],['4,6 · 3 =',13.8],
+    ['7,2 : 0,8 =',9],['3/5 von 45 =',27],['15 % von 240 =',36],['2,5 km =',2500,'m'],
+  ],
 };
-const PUZ={};for(const k in LEVELS)PUZ[k]=makeSudoku(LEVELS[k]);
 
 const CHOICES=[
-  {key:'leichter',   wert:1,title:'Leichter',      sub:'Kleines Sudoku 4×4',  lvl:'leichter'},
-  {key:'gleich',     wert:2,title:'Gleich schwer', sub:'Neues Sudoku 6×6',    lvl:'gleich'},
-  {key:'schwieriger',wert:3,title:'Schwieriger',   sub:'Grosses Sudoku 9×9',  lvl:'schwieriger'},
+  {key:'leichter',   wert:1,title:'Leichter',      bsp:'z. B. 45 + 38',     sub:'Einfachere Rechnungen'},
+  {key:'gleich',     wert:2,title:'Gleich schwer', bsp:'z. B. 427 + 389',   sub:'Ähnlich wie vorher'},
+  {key:'schwieriger',wert:3,title:'Schwieriger',   bsp:'z. B. 23 · 17',     sub:'Anspruchsvollere Rechnungen'},
 ];
 const CH=Object.fromEntries(CHOICES.map(c=>[c.key,c]));
 
 /* ---------- Bewertung ---------- */
-// Fünf Smiley-Stufen. Grenzen in bildFor und Beschriftung in BILD_NOTEN immer zusammen ändern.
-const BILD=['sehr traurig','traurig','neutral','froh','strahlend'];
+// Fünf Pflanzen-Stufen. Grenzen in bildFor und Beschriftung in BILD_NOTEN immer zusammen ändern.
+const BILD=['Samen','Keimling','Jungpflanze','Pflanze','Blüte'];
 const BILD_NOTEN=['Note 1 – 2,5','Note 3 – 3,5','Note 4','Note 4,5 – 5','Note 5,5 – 6'];
 function noteFor(ratio){return Math.round((1+5*ratio)*2)/2}
 function bildFor(note){return note>=5.5?4:note>=4.5?3:note>=4?2:note>=3?1:0}
+// Wachsende Pflanze im Topf: 0 = nur Samen ... 4 = blühende Pflanze.
 function faceSVG(level){
-  const mouths=['M70 150 Q100 116 130 150','M74 146 Q100 126 126 146','M76 140 L124 140','M70 132 Q100 156 130 132','M66 126 Q100 168 134 126 Q100 142 66 126 Z'];
-  const brows=level===0?'<path d="M66 70 L88 80 M134 70 L112 80" stroke="var(--face-line)" stroke-width="3" stroke-linecap="round"/>'
-    :level===1?'<path d="M68 72 L88 78 M132 72 L112 78" stroke="var(--face-line)" stroke-width="3" stroke-linecap="round"/>':'';
-  const tear=level===0?'<path d="M127 104 Q121 113 127 119 Q133 113 127 104Z" fill="#9CC3E0" stroke="var(--face-line)" stroke-width="1.5"/>':'';
-  const cheeks=level>=3?'<circle cx="62" cy="120" r="9" fill="#E9B7A0" opacity=".55"/><circle cx="138" cy="120" r="9" fill="#E9B7A0" opacity=".55"/>':'';
+  const leaf=(x,y,d,k,c)=>`<path d="M${x} ${y} Q${x+d*k*.5} ${y-k*.9} ${x+d*k} ${y-k*.4} Q${x+d*k*.5} ${y+k*.2} ${x} ${y}Z" fill="${c}" stroke="#3F7A4F" stroke-width="2" stroke-linejoin="round"/>`;
+  const pair=(y,k,c)=>leaf(100,y,-1,k,c)+leaf(100,y,1,k,c);
+  const stem=(top,w)=>`<path d="M100 138 V${top}" stroke="#3F7A4F" stroke-width="${w}" stroke-linecap="round"/>`;
+  const flower=(x,y,r,big)=>[0,60,120,180,240,300].map(a=>`<circle cx="${(x+r*1.35*Math.cos(a*Math.PI/180)).toFixed(1)}" cy="${(y+r*1.35*Math.sin(a*Math.PI/180)).toFixed(1)}" r="${r}" fill="${big?'#F2CD5C':'#F1B3C0'}" stroke="#B38A52" stroke-width="1.5"/>`).join('')+`<circle cx="${x}" cy="${y}" r="${r*.85}" fill="#EFA15A" stroke="#B38A52" stroke-width="1.5"/>`;
+  const plant=[
+    '<ellipse cx="100" cy="133" rx="10" ry="6" fill="#A9805F" stroke="#6B4A33" stroke-width="1.5"/>',
+    stem(122,3)+pair(123,12,'#C9E6BF'),
+    stem(100,4)+pair(126,18,'#A8D69C')+pair(101,15,'#A8D69C'),
+    stem(66,5)+pair(128,25,'#86C47E')+pair(106,24,'#86C47E')+pair(85,20,'#86C47E')
+      +'<ellipse cx="100" cy="60" rx="6" ry="9" fill="#86C47E" stroke="#3F7A4F" stroke-width="2"/><path d="M96 54 Q100 46 104 54" fill="#F2CD5C" stroke="#B38A52" stroke-width="1.5"/>',
+    '<path d="M100 100 Q80 88 68 70 M100 92 Q120 80 132 62" fill="none" stroke="#3F7A4F" stroke-width="3.5" stroke-linecap="round"/>'
+      +stem(44,6)+pair(130,28,'#5FAA63')+pair(110,27,'#5FAA63')+pair(90,23,'#5FAA63')+pair(68,18,'#5FAA63')
+      +leaf(80,86,-1,14,'#5FAA63')+leaf(118,80,1,14,'#5FAA63')
+      +flower(68,66,6,false)+flower(132,58,6,false)+flower(100,36,11,true),
+  ][level];
   return `<svg viewBox="0 0 200 200" role="img" aria-label="Bewertung: ${BILD[level]}">
-    <circle cx="100" cy="100" r="72" fill="var(--face)" stroke="var(--face-line)" stroke-width="2.5"/>
-    ${cheeks}${brows}<circle cx="80" cy="92" r="5.5" fill="var(--face-line)"/><circle cx="120" cy="92" r="5.5" fill="var(--face-line)"/>${tear}
-    <path d="${mouths[level]}" fill="${level===4?'#fff':'none'}" stroke="var(--face-line)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+    ${plant}<path d="M64 152 H136 L128 190 H72Z" fill="#C9775A" stroke="#7A4630" stroke-width="2" stroke-linejoin="round"/>
+    <rect x="56" y="138" width="88" height="16" rx="3" fill="#D88A6C" stroke="#7A4630" stroke-width="2"/>
+    <ellipse cx="100" cy="139" rx="40" ry="3.5" fill="#6B4A33"/></svg>`;
 }
 
 /* ---------- Speicher: Google Sheet über Apps Script, mit Sicherung auf dem Gerät ---------- */
@@ -405,8 +429,8 @@ async function deleteRecord(id){
 
 /* ---------- Navigation ---------- */
 const $=id=>document.getElementById(id);
-const SCREENS=['links','setup','intro1','sudoku','feedback','choice','done','results'];
-const KID=new Set(['intro1','sudoku','feedback','choice','done']);
+const SCREENS=['links','setup','intro1','math','feedback','choice','done','results'];
+const KID=new Set(['intro1','math','feedback','choice','done']);
 function show(name){
   SCREENS.forEach(s=>$('s-'+s).hidden=s!==name);
   const kid=KID.has(name);
@@ -431,78 +455,48 @@ $('start').onclick=()=>{
   sess={gruppe,klasse,kuerzel,probe:false,id:null};
   show('intro1');
 };
-$('go1').onclick=()=>startSudoku('a1');
+$('go1').onclick=()=>startMath('a1');
 
-let sd=null;
-function startSudoku(lvl){
-  const p=PUZ[lvl];
-  sd={lvl,p,vals:p.puz.slice(),sel:-1,t0:Date.now()};
+// Antwort lesen: 6,25 / 6.25 / 4'224 / 4 224 sind alle gültig.
+function parseNum(v){v=String(v).trim().replace(/[\s'’]/g,'').replace(',','.');return /^-?(\d+\.?\d*|\.\d+)$/.test(v)?Number(v):null}
+let ms=null;
+function startMath(lvl){
+  ms={lvl,items:MATH[lvl],t0:Date.now()};
   const graded=lvl==='a1';
-  const b=$('sd-banner');b.className='banner '+(graded?'graded':'free');
+  const b=$('m-banner');b.className='banner '+(graded?'graded':'free');
   b.textContent=graded?'Diese Aufgabe wird bewertet':'Diese Aufgabe wird nicht bewertet';
-  const board=$('board');board.style.setProperty('--n',p.n);board.innerHTML='';
-  for(let i=0;i<p.n*p.n;i++){
-    const r=Math.floor(i/p.n),c=i%p.n,el=document.createElement('button');
-    el.className='cell'+(p.puz[i]?' given':'')+((c+1)%p.bc===0&&c<p.n-1?' br':'')+((r+1)%p.br===0&&r<p.n-1?' bb':'')+(c===p.n-1?' lastc':'')+(r===p.n-1?' lastr':'');
-    el.type='button';el.dataset.i=i;el.setAttribute('aria-label',`Zeile ${r+1}, Spalte ${c+1}`);
-    if(!p.puz[i])el.onclick=()=>{sd.sel=i;paint()};else el.tabIndex=-1;
-    board.appendChild(el);
-  }
-  const pad=$('pad');pad.innerHTML='';
-  for(let v=1;v<=p.n;v++){const x=document.createElement('button');x.type='button';x.textContent=v;x.onclick=()=>enter(v);pad.appendChild(x)}
-  const d=document.createElement('button');d.type='button';d.className='del';d.textContent='Löschen';d.onclick=()=>enter(0);pad.appendChild(d);
-  sd.sel=p.puz.indexOf(0);paint();show('sudoku');
+  const list=$('mathlist');list.innerHTML='';
+  ms.items.forEach(([q,,u],i)=>{
+    const row=document.createElement('label');row.className='task';
+    row.innerHTML=`<span class="nr">${i+1}.</span><span class="q">${q}</span><input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" enterkeyhint="next" aria-label="Ergebnis Aufgabe ${i+1}"><span class="u">${u||''}</span>`;
+    list.appendChild(row);
+  });
+  const inputs=[...list.querySelectorAll('input')];
+  inputs.forEach((el,i)=>el.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();if(inputs[i+1])inputs[i+1].focus();else el.blur()}}));
+  disarm($('m-done'));show('math');
 }
-function enter(v){if(!sd||sd.sel<0||sd.p.puz[sd.sel])return;sd.vals[sd.sel]=v;paint()}
-function paint(){
-  const {p,vals,sel}=sd,cells=$('board').children;
-  const sr=Math.floor(sel/p.n),sc=sel%p.n;
-  for(let i=0;i<cells.length;i++){
-    const r=Math.floor(i/p.n),c=i%p.n,el=cells[i];
-    el.textContent=vals[i]||'';
-    const peer=sel>=0&&(r===sr||c===sc||(Math.floor(r/p.br)===Math.floor(sr/p.br)&&Math.floor(c/p.bc)===Math.floor(sc/p.bc)));
-    el.classList.toggle('sel',i===sel);el.classList.toggle('peer',peer&&i!==sel);
-  }
+function scoreMath(){
+  const inputs=[...$('mathlist').querySelectorAll('input')];let richtig=0,ausgefuellt=0;
+  ms.items.forEach(([,sol],i)=>{const v=inputs[i].value.trim();if(v)ausgefuellt++;const x=parseNum(v);if(x!==null&&Math.abs(x-sol)<1e-9)richtig++});
+  return {leer:ms.items.length,ausgefuellt,richtig,zeitSek:Math.round((Date.now()-ms.t0)/1000)};
 }
-document.addEventListener('keydown',e=>{
-  if($('s-sudoku').hidden||!sd)return;
-  const n=sd.p.n;
-  if(/^[1-9]$/.test(e.key)&&+e.key<=n){enter(+e.key);e.preventDefault()}
-  else if(e.key==='Backspace'||e.key==='Delete'||e.key==='0'){enter(0);e.preventDefault()}
-  else if(e.key.startsWith('Arrow')&&sd.sel>=0){
-    const d={ArrowUp:-n,ArrowDown:n,ArrowLeft:-1,ArrowRight:1}[e.key];let i=sd.sel;
-    do{i+=d}while(i>=0&&i<n*n&&sd.p.puz[i]&&!(d===1&&i%n===0)&&!(d===-1&&i%n===n-1));
-    if(i>=0&&i<n*n&&!sd.p.puz[i]){sd.sel=i;paint()}e.preventDefault();
-  }
-});
-function scoreSudoku(){
-  const {p,vals}=sd;let leer=0,richtig=0,ausgefuellt=0;
-  for(let i=0;i<vals.length;i++){if(p.puz[i])continue;leer++;if(vals[i])ausgefuellt++;if(vals[i]===p.sol[i])richtig++}
-  return {groesse:p.n,leer,ausgefuellt,richtig,zeitSek:Math.round((Date.now()-sd.t0)/1000)};
-}
-$('sd-done').onclick=()=>{
-  const s=scoreSudoku();
-  if(sd.lvl==='a1'){
+$('m-done').onclick=()=>{
+  const s=scoreMath();
+  if(ms.lvl==='a1'){
     const note=noteFor(s.richtig/s.leer),b=bildFor(note);
     sess.a1={...s,note,bild:BILD[b]};
     $('fb').innerHTML=sess.gruppe==='note'?`<div class="grade" aria-label="Note ${note}">${String(note)}</div>`:`<div class="faceBox">${faceSVG(b)}</div>`;
     $('fb').classList.remove('fade');void $('fb').offsetWidth;$('fb').classList.add('fade');
     show('feedback');
-  }else finishTask2({typ:'sudoku '+s.groesse+'×'+s.groesse,zeitSek:s.zeitSek,ergebnis:`${s.richtig}/${s.leer} richtig`,geloest:s.richtig===s.leer});
+  }else finishTask2({typ:'mathe '+ms.lvl,zeitSek:s.zeitSek,ergebnis:`${s.richtig}/${s.leer} richtig`,geloest:s.richtig===s.leer});
 };
 $('go-choice').onclick=()=>{renderChoices();show('choice');sess.tWahl=Date.now()};
 
-function miniGrid(n,frac){
-  const cells=range(n*n).map(i=>`<i class="${(i*7)%10<frac*10?'f':''}"></i>`).join('');
-  const sz=n===9?8:n===6?12:18;
-  return `<span class="mini" style="grid-template-columns:repeat(${n},${sz}px)">${cells.replace(/<i/g,`<i style="width:${sz}px;height:${sz}px"`)}</span>`;
-}
 function renderChoices(){
   const box=$('choices');box.innerHTML='';
   CHOICES.forEach(c=>{
     const b=document.createElement('button');b.type='button';b.className='choice';b.id='ch-'+c.key;
-    const pic=miniGrid(PUZ[c.lvl].n,.5);
-    b.innerHTML=`${pic}<b>${c.title}</b><small>${c.sub}</small>`;
+    b.innerHTML=`<b>${c.title}</b><span class="ex">${c.bsp}</span><small>${c.sub}</small>`;
     b.onclick=()=>choose(c);box.appendChild(b);
   });
 }
@@ -510,24 +504,112 @@ async function choose(c){
   document.querySelectorAll('.choice').forEach(x=>x.disabled=true);
   sess.rec={id:'r'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),datum:new Date().toISOString(),klasse:sess.klasse,kuerzel:sess.kuerzel,gruppe:sess.gruppe,probe:sess.probe,a1:sess.a1,wahl:c.key,wert:c.wert,wahlZeitSek:Math.round((Date.now()-sess.tWahl)/100)/10,a2:null};
   queueSave(sess.rec);
-  startSudoku(c.lvl);
+  startMath(c.key);
 }
 function finishTask2(a2){
   sess.rec.a2=a2;queueSave(sess.rec);
-  buildColors();
+  startFree();
   show('done');
 }
 
-/* ---------- Ausmalbild ---------- */
-const PAL=['#F2CD5C','#EFA15A','#E07A6A','#F1B3C0','#A993D6','#7FA7D6','#BFDDF0','#8CC08E','#4F8F62','#A9805F','#9A9A9A','#FFFFFF'];
-let paintColor=PAL[0];
-function buildColors(){
-  const box=$('colors');box.innerHTML='';
-  PAL.forEach(c=>{const b=document.createElement('button');b.type='button';b.style.background=c;
-    b.setAttribute('aria-label',c==='#FFFFFF'?'Weiss (Radierer)':'Farbe');b.setAttribute('aria-pressed',String(c===paintColor));
-    b.onclick=()=>{paintColor=c;box.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',String(x===b)))};box.appendChild(b)});
-  document.querySelectorAll('#paint g:first-child > *').forEach(el=>{el.setAttribute('fill','#fff');el.onclick=()=>el.setAttribute('fill',paintColor)});
+/* ---------- Freie Spiele am Schluss (werden nicht gespeichert) ---------- */
+const FZ_TABS=[['sudoku','Sudoku'],['memory','Memory'],['slide','Schiebepuzzle']];
+let fzTab='sudoku';
+function startFree(){
+  const t=$('fz-tabs');t.innerHTML='';
+  FZ_TABS.forEach(([k,title])=>{const b=document.createElement('button');b.type='button';b.textContent=title;b.dataset.k=k;b.onclick=()=>fzShow(k);t.appendChild(b)});
+  startFzSudoku();startMemo();startSlide();fzShow('sudoku');
 }
+function fzShow(k){
+  fzTab=k;FZ_TABS.forEach(([x])=>$('fz-'+x).hidden=x!==k);
+  $('fz-tabs').querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.k===k)));
+}
+
+/* Sudoku (mittel, 9×9, jedes Mal ein neues) */
+let fz=null;
+function startFzSudoku(){
+  const p=makeSudoku({n:9,br:3,bc:3,clues:38,seed:Math.floor(Math.random()*1e9)});
+  fz={p,vals:p.puz.slice(),sel:p.puz.indexOf(0),wrong:new Set()};
+  const board=$('fz-board');board.style.setProperty('--n',p.n);board.innerHTML='';
+  for(let i=0;i<p.n*p.n;i++){
+    const r=Math.floor(i/p.n),c=i%p.n,el=document.createElement('button');
+    el.className='cell'+(p.puz[i]?' given':'')+((c+1)%p.bc===0&&c<p.n-1?' br':'')+((r+1)%p.br===0&&r<p.n-1?' bb':'')+(c===p.n-1?' lastc':'')+(r===p.n-1?' lastr':'');
+    el.type='button';el.setAttribute('aria-label',`Zeile ${r+1}, Spalte ${c+1}`);
+    if(!p.puz[i])el.onclick=()=>{fz.sel=i;fzPaint()};else el.tabIndex=-1;
+    board.appendChild(el);
+  }
+  const pad=$('fz-pad');pad.innerHTML='';
+  for(let v=1;v<=p.n;v++){const x=document.createElement('button');x.type='button';x.textContent=v;x.onclick=()=>fzEnter(v);pad.appendChild(x)}
+  const d=document.createElement('button');d.type='button';d.className='del';d.textContent='Löschen';d.onclick=()=>fzEnter(0);pad.appendChild(d);
+  setMsg('fz-msg','');fzPaint();
+}
+function fzEnter(v){if(!fz||fz.sel<0||fz.p.puz[fz.sel])return;fz.vals[fz.sel]=v;fz.wrong.delete(fz.sel);setMsg('fz-msg','');fzPaint()}
+function fzPaint(){
+  const {p,vals,sel,wrong}=fz,cells=$('fz-board').children;
+  const sr=Math.floor(sel/p.n),sc=sel%p.n;
+  for(let i=0;i<cells.length;i++){
+    const r=Math.floor(i/p.n),c=i%p.n,el=cells[i];
+    el.textContent=vals[i]||'';
+    const peer=sel>=0&&(r===sr||c===sc||(Math.floor(r/p.br)===Math.floor(sr/p.br)&&Math.floor(c/p.bc)===Math.floor(sc/p.bc)));
+    el.classList.toggle('sel',i===sel);el.classList.toggle('peer',peer&&i!==sel);el.classList.toggle('wrong',wrong.has(i));
+  }
+}
+$('fz-check').onclick=()=>{
+  if(!fz)return;const {p,vals}=fz;let leer=0;fz.wrong=new Set();
+  for(let i=0;i<vals.length;i++){if(!vals[i])leer++;else if(vals[i]!==p.sol[i])fz.wrong.add(i)}
+  fzPaint();
+  const w=fz.wrong.size;
+  setMsg('fz-msg',w?`${w} ${w>1?'Felder stimmen':'Feld stimmt'} noch nicht (rot markiert).`:leer?`Bisher alles richtig. Es ${leer>1?'fehlen':'fehlt'} noch ${leer} ${leer>1?'Felder':'Feld'}.`:'Super, alles richtig gelöst! Probier doch ein neues Sudoku.');
+};
+$('fz-new').onclick=startFzSudoku;
+document.addEventListener('keydown',e=>{
+  if($('s-done').hidden||fzTab!=='sudoku'||!fz)return;
+  if(/^[1-9]$/.test(e.key)){fzEnter(+e.key);e.preventDefault()}
+  else if(e.key==='Backspace'||e.key==='Delete'||e.key==='0'){fzEnter(0);e.preventDefault()}
+});
+
+/* Memory: 8 Paare */
+const MEMO_SYM=['🍎','🚀','🎸','⚽','🌵','🐙','🎈','🔑'];
+let memo=null;
+function startMemo(){
+  memo={cards:shuffle([...MEMO_SYM,...MEMO_SYM],Math.random),open:[],found:new Set(),moves:0,lock:false};
+  const box=$('memo');box.innerHTML='';
+  memo.cards.forEach((_,i)=>{const b=document.createElement('button');b.type='button';b.setAttribute('aria-label','Karte '+(i+1));b.onclick=()=>memoFlip(i);box.appendChild(b)});
+  setMsg('memo-msg','Finde alle Paare.');memoPaint();
+}
+function memoPaint(){
+  [...$('memo').children].forEach((b,i)=>{const up=memo.open.includes(i)||memo.found.has(i);b.textContent=up?memo.cards[i]:'';b.classList.toggle('up',up);b.classList.toggle('found',memo.found.has(i))});
+}
+function memoFlip(i){
+  if(memo.lock||memo.found.has(i)||memo.open.includes(i))return;
+  memo.open.push(i);memoPaint();
+  if(memo.open.length<2)return;
+  memo.moves++;const [a,b]=memo.open;
+  if(memo.cards[a]===memo.cards[b]){memo.found.add(a);memo.found.add(b);memo.open=[];memoPaint()}
+  else{memo.lock=true;setTimeout(()=>{memo.open=[];memo.lock=false;memoPaint()},900)}
+  setMsg('memo-msg',memo.found.size===memo.cards.length?`Geschafft in ${memo.moves} Zügen!`:`Züge: ${memo.moves}`);
+}
+$('memo-new').onclick=startMemo;
+
+/* Schiebepuzzle 4×4: Zahlen 1–15 in die richtige Reihenfolge schieben */
+let sl=null;
+function slNb(e){const r=Math.floor(e/4),c=e%4,o=[];if(r>0)o.push(e-4);if(r<3)o.push(e+4);if(c>0)o.push(e-1);if(c<3)o.push(e+1);return o}
+const slSolved=t=>t.every((v,i)=>v===(i+1)%16);
+function startSlide(){
+  const t=[...range(15).map(x=>x+1),0];let e=15,prev=-1;
+  do{for(let k=0;k<300;k++){const nb=slNb(e).filter(x=>x!==prev),j=nb[Math.floor(Math.random()*nb.length)];t[e]=t[j];t[j]=0;prev=e;e=j}}while(slSolved(t));
+  sl={t,moves:0};
+  const box=$('slide');box.innerHTML='';
+  for(let i=0;i<16;i++){const b=document.createElement('button');b.type='button';b.onclick=()=>slMove(i);box.appendChild(b)}
+  setMsg('sl-msg','Schiebe die Zahlen in die Reihenfolge 1 bis 15.');slPaint();
+}
+function slPaint(){[...$('slide').children].forEach((b,i)=>{b.textContent=sl.t[i]||'';b.classList.toggle('empty',!sl.t[i])})}
+function slMove(i){
+  const e=sl.t.indexOf(0);if(!slNb(e).includes(i)||slSolved(sl.t))return;
+  sl.t[e]=sl.t[i];sl.t[i]=0;sl.moves++;slPaint();
+  setMsg('sl-msg',slSolved(sl.t)?`Geschafft in ${sl.moves} Zügen!`:`Züge: ${sl.moves}`);
+}
+$('sl-new').onclick=startSlide;
 
 /* ---------- Auswertung ---------- */
 const fmt=(x,d=2)=>x==null||isNaN(x)?'–':x.toFixed(d).replace('.',',');
@@ -571,7 +653,7 @@ function renderResults(){
 function mmss(s){if(s==null)return'–';return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
 function esc(s){return String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 function csv(){
-  const head=['datum','klasse','kuerzel','gruppe','probe','a1_leer','a1_richtig','a1_ausgefuellt','a1_note','a1_bild','a1_zeit_s','wahl','wahl_zeit_s','wert','a2_typ','a2_ergebnis','a2_geloest','a2_zeit_s'];
+  const head=['datum','klasse','kuerzel','gruppe','probe','a1_leer','a1_richtig','a1_ausgefuellt','a1_note','a1_bild','a1_zeit_s','wahl','wert','a2_typ','a2_ergebnis','a2_geloest','a2_zeit_s','wahl_zeit_s'];
   const q=v=>{v=v==null?'':String(v);return /[;"\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
   const lines=rows.slice().sort((a,b)=>(a.datum||'').localeCompare(b.datum||'')).map(r=>{const a=r.a1||{},b=r.a2||{};
     return [r.datum,r.klasse,r.kuerzel,r.gruppe,r.probe?1:0,a.leer,a.richtig,a.ausgefuellt,a.note,a.bild,a.zeitSek,r.wahl,r.wert,b.typ,b.ergebnis,b.geloest==null?'':b.geloest?1:0,b.zeitSek,r.wahlZeitSek].map(q).join(';')});
