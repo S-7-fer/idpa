@@ -334,31 +334,35 @@ const CH=Object.fromEntries(CHOICES.map(c=>[c.key,c]));
 
 /* ---------- Bewertung ---------- */
 // Fünf Pflanzen-Stufen. Grenzen in bildFor und Beschriftung in BILD_NOTEN immer zusammen ändern.
-const BILD=['Samen','Keimling','Jungpflanze','Pflanze','Blüte'];
+const BILD=['Samen','Keimender Samen','Spross','Keimling','Pflanze'];
 const BILD_NOTEN=['Note 1 – 2,5','Note 3 – 3,5','Note 4','Note 4,5 – 5','Note 5,5 – 6'];
 function noteFor(ratio){return Math.round((1+5*ratio)*2)/2}
 function bildFor(note){return note>=5.5?4:note>=4.5?3:note>=4?2:note>=3?1:0}
-// Wachsende Pflanze im Topf: 0 = nur Samen ... 4 = blühende Pflanze.
+// Wachsende Pflanze auf einem Erdhügel: 0 = Samen ... 4 = Pflanze mit vielen Blättern.
 function faceSVG(level){
-  const leaf=(x,y,d,k,c)=>`<path d="M${x} ${y} Q${x+d*k*.5} ${y-k*.9} ${x+d*k} ${y-k*.4} Q${x+d*k*.5} ${y+k*.2} ${x} ${y}Z" fill="${c}" stroke="#3F7A4F" stroke-width="2" stroke-linejoin="round"/>`;
-  const pair=(y,k,c)=>leaf(100,y,-1,k,c)+leaf(100,y,1,k,c);
-  const stem=(top,w)=>`<path d="M100 138 V${top}" stroke="#3F7A4F" stroke-width="${w}" stroke-linecap="round"/>`;
-  const flower=(x,y,r,big)=>[0,60,120,180,240,300].map(a=>`<circle cx="${(x+r*1.35*Math.cos(a*Math.PI/180)).toFixed(1)}" cy="${(y+r*1.35*Math.sin(a*Math.PI/180)).toFixed(1)}" r="${r}" fill="${big?'#F2CD5C':'#F1B3C0'}" stroke="#B38A52" stroke-width="1.5"/>`).join('')+`<circle cx="${x}" cy="${y}" r="${r*.85}" fill="#EFA15A" stroke="#B38A52" stroke-width="1.5"/>`;
+  const seed='<ellipse cx="0" cy="-14" rx="7" ry="9.5" transform="rotate(-18 0 -14)" fill="#E8B26A" stroke="#B9813E" stroke-width="1.2"/>';
+  const leaf=(d,a,b,c,e)=>`<path d="${d}" fill="${a}" stroke="${b}" stroke-width="1.2" stroke-linejoin="round"/>`;
   const plant=[
-    '<ellipse cx="100" cy="133" rx="10" ry="6" fill="#A9805F" stroke="#6B4A33" stroke-width="1.5"/>',
-    stem(122,3)+pair(123,12,'#C9E6BF'),
-    stem(100,4)+pair(126,18,'#A8D69C')+pair(101,15,'#A8D69C'),
-    stem(66,5)+pair(128,25,'#86C47E')+pair(106,24,'#86C47E')+pair(85,20,'#86C47E')
-      +'<ellipse cx="100" cy="60" rx="6" ry="9" fill="#86C47E" stroke="#3F7A4F" stroke-width="2"/><path d="M96 54 Q100 46 104 54" fill="#F2CD5C" stroke="#B38A52" stroke-width="1.5"/>',
-    '<path d="M100 100 Q80 88 68 70 M100 92 Q120 80 132 62" fill="none" stroke="#3F7A4F" stroke-width="3.5" stroke-linecap="round"/>'
-      +stem(44,6)+pair(130,28,'#5FAA63')+pair(110,27,'#5FAA63')+pair(90,23,'#5FAA63')+pair(68,18,'#5FAA63')
-      +leaf(80,86,-1,14,'#5FAA63')+leaf(118,80,1,14,'#5FAA63')
-      +flower(68,66,6,false)+flower(132,58,6,false)+flower(100,36,11,true),
+    seed,
+    '<path d="M3 -21 C6 -30 1 -36 -4 -33" fill="none" stroke="#7CB342" stroke-width="3" stroke-linecap="round"/>'+seed
+      +'<path d="M-2 -22 L1 -16 L-1 -11" fill="none" stroke="#B9813E" stroke-width="1.2" stroke-linecap="round"/>',
+    '<path d="M0 -10 C0 -28 6 -38 2 -46 C-2 -53 -11 -50 -10 -43" fill="none" stroke="#7CB342" stroke-width="3.5" stroke-linecap="round"/>'
+      +'<ellipse cx="-10" cy="-41" rx="3.5" ry="5" transform="rotate(25 -10 -41)" fill="#9CCC65" stroke="#558B2F" stroke-width="1"/>',
+    '<path d="M0 -10 V-50" stroke="#689F38" stroke-width="3.5" stroke-linecap="round"/>'
+      +leaf('M0 -50 Q-20 -66 -27 -52 Q-14 -42 0 -50Z','#8BC34A','#558B2F')
+      +leaf('M0 -50 Q20 -66 27 -52 Q14 -42 0 -50Z','#9CCC65','#558B2F')
+      +'<path d="M-3 -51 L-21 -54 M3 -51 L21 -54" stroke="#558B2F" stroke-width=".9" stroke-linecap="round"/>',
+    '<path d="M0 -10 V-86 M0 -44 Q-10 -56 -20 -62 M0 -60 Q12 -70 20 -78" fill="none" stroke="#689F38" stroke-width="3.5" stroke-linecap="round"/>'
+      +leaf('M0 -30 Q-22 -42 -30 -28 Q-15 -20 0 -30Z','#7CB342','#33691E')
+      +leaf('M0 -30 Q22 -42 30 -28 Q15 -20 0 -30Z','#8BC34A','#33691E')
+      +leaf('M-20 -62 Q-38 -66 -38 -52 Q-26 -50 -20 -62Z','#8BC34A','#33691E')
+      +leaf('M20 -78 Q38 -82 38 -68 Q26 -66 20 -78Z','#7CB342','#33691E')
+      +leaf('M0 -86 Q-16 -96 -20 -84 Q-10 -78 0 -86Z','#9CCC65','#33691E')
+      +leaf('M0 -86 Q16 -96 20 -84 Q10 -78 0 -86Z','#8BC34A','#33691E')
+      +leaf('M0 -86 Q-6 -104 2 -108 Q8 -98 0 -86Z','#9CCC65','#33691E'),
   ][level];
-  return `<svg viewBox="0 0 200 200" role="img" aria-label="Bewertung: ${BILD[level]}">
-    ${plant}<path d="M64 152 H136 L128 190 H72Z" fill="#C9775A" stroke="#7A4630" stroke-width="2" stroke-linejoin="round"/>
-    <rect x="56" y="138" width="88" height="16" rx="3" fill="#D88A6C" stroke="#7A4630" stroke-width="2"/>
-    <ellipse cx="100" cy="139" rx="40" ry="3.5" fill="#6B4A33"/></svg>`;
+  return `<svg viewBox="0 0 200 200" role="img" aria-label="Bewertung: ${BILD[level]}"><g transform="translate(100 182) scale(1.55)">
+    ${plant}<path d="M-34 0 Q0 -24 34 0 Z" fill="#6D4C3D"/><path d="M-20 -8 Q0 -16 16 -9" fill="none" stroke="#86614F" stroke-width="2" stroke-linecap="round"/></g></svg>`;
 }
 
 /* ---------- Speicher: Google Sheet über Apps Script, mit Sicherung auf dem Gerät ---------- */
