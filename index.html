@@ -109,6 +109,33 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ochre);outline-offs
 .task .q{font-size:1.2rem;font-weight:400;font-variant-numeric:tabular-nums}
 .task input{width:100%;font-size:1.2rem;text-align:right}
 .task .u{color:var(--muted)}
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;line-height:1.15;margin:0 .12em;font-variant-numeric:tabular-nums}
+.frac>span:last-child{border-top:2px solid currentColor;min-width:1.3em;text-align:center}
+.a1page{display:flex;flex-direction:column;align-items:center;gap:18px;width:100%}
+.example{color:var(--muted);font-size:1.15rem;display:flex;align-items:center;gap:.35em;flex-wrap:wrap;justify-content:center}
+.task.cmp{grid-template-columns:1.6em 1fr}
+.cmpq{display:flex;align-items:center;gap:14px;font-size:1.3rem;font-weight:400}
+.task select{font:inherit;font-size:1.3rem;padding:6px 10px;border:1px solid var(--line-mid);border-radius:var(--radius);background:#fff;color:var(--ink)}
+.order{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;display:flex;flex-direction:column;gap:10px;width:100%;max-width:640px}
+.pool{display:flex;flex-wrap:wrap;gap:8px;min-height:70px;align-items:center;justify-content:center;padding:6px;border:1px dashed var(--line-mid);border-radius:var(--radius)}
+.slots{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+.slot{min-height:70px;border:2px solid var(--line-mid);border-radius:var(--radius);background:#fff;display:flex;align-items:center;justify-content:center}
+.slotlab{display:flex;justify-content:space-between;font-size:.8rem;color:var(--muted)}
+.chip{min-width:54px;min-height:58px;padding:4px 8px;border:1px solid var(--ink);border-radius:var(--radius);background:var(--ink-soft);color:var(--ink);font-size:1.2rem;font-weight:400;display:inline-flex;align-items:center;justify-content:center;touch-action:none;user-select:none;-webkit-user-select:none;cursor:grab}
+.chip.selected{outline:3px solid var(--ochre);outline-offset:1px}
+.task .slot{min-width:84px;min-height:62px;display:inline-flex}
+.fracin{display:inline-flex;flex-direction:column;align-items:center;gap:4px}
+.fracin input{width:3.4em;text-align:center;font-size:1.2rem;padding:5px}
+.fracin i{display:block;width:3.8em;height:2px;background:currentColor}
+.pics{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px}
+.pic{display:flex;flex-direction:column;align-items:center;gap:8px}
+.pics.trenn{display:flex;flex-wrap:nowrap;align-items:flex-end}
+.pics.trenn .pic{padding:0 10px;min-width:0}
+.pics.trenn .slot{width:100%;max-width:96px;min-width:0}
+.pics.trenn .pic+.pic{border-left:2px dashed var(--line-mid)}
+.pic svg{width:100%;height:auto}
+.pic .slot{width:96px}
+.chip.ghost{position:fixed;pointer-events:none;z-index:99;opacity:.9;transform:translate(-50%,-50%)}
 .memory,.slide{display:grid;grid-template-columns:repeat(4,min(76px,20vw));gap:8px}
 .memory button{aspect-ratio:1;font-size:2rem;border:1px solid var(--line-mid);border-radius:var(--radius);background:var(--ink);cursor:pointer;padding:0}
 .memory button.up{background:var(--card)}
@@ -187,16 +214,17 @@ td.num{text-align:right}
   <!-- INTRO 1 -->
   <section id="s-intro1" class="stack kid" hidden>
     <span class="banner graded">Diese Aufgabe wird bewertet</span>
-    <h2>Löse die Rechnungen!</h2>
-    <p class="rules">Schreibe jeweils das Ergebnis ins Feld. Kommazahlen schreibst du mit Komma, zum Beispiel 2,5.</p>
+    <h2>Löse die Aufgaben zu Brüchen!</h2>
+    <p class="rules">Die Aufgabe hat drei Teile. Mit «Weiter» kommst du zum nächsten Teil.</p>
     <button class="btn big" id="go1">Los geht's</button>
   </section>
 
-  <!-- TASK (Mathe, beide Runden) -->
-  <section id="s-math" class="stack kid" hidden>
-    <span class="banner" id="m-banner"></span>
-    <div class="mathlist" id="mathlist"></div>
-    <button class="btn ghost big" id="m-done">Ich bin fertig</button>
+  <!-- AUFGABEN MIT MEHREREN SEITEN (Aufgabe 1 und «leichter») -->
+  <section id="s-task" class="stack kid" hidden>
+    <span class="banner" id="t-banner"></span>
+    <p class="small muted" id="t-step"></p>
+    <div id="t-pages" style="width:100%"></div>
+    <button class="btn big" id="t-next">Weiter</button>
   </section>
 
   <!-- FEEDBACK -->
@@ -303,32 +331,55 @@ function makeSudoku({n,br,bc,clues,seed}){
   }
   return {n,br,bc,sol,puz};
 }
-/* ---------- Matheaufgaben (fest: alle Kinder bekommen dieselben) ----------
-   Jede Aufgabe: [Rechnung, Lösung, Einheit hinter dem Feld (optional)]. */
-const MATH={
-  a1:[
-    ['348 + 576 =',924],['1000 − 637 =',363],['24 · 6 =',144],['144 : 12 =',12],
-    ['7 · 35 =',245],['2,5 + 3,75 =',6.25],['10 − 4,3 =',5.7],['0,4 · 5 =',2],
-    ['3/4 von 20 =',15],['25 % von 80 =',20],['4,2 m =',420,'cm'],['3 · (8 + 7) =',45],
-  ],
-  leichter:[
-    ['45 + 38 =',83],['92 − 47 =',45],['7 · 8 =',56],['63 : 9 =',7],
-    ['150 + 250 =',400],['6 · 12 =',72],['1/2 von 30 =',15],['2 m =',200,'cm'],
-  ],
-  gleich:[
-    ['427 + 389 =',816],['900 − 548 =',352],['32 · 4 =',128],['96 : 8 =',12],
-    ['1,5 + 2,75 =',4.25],['8 − 2,6 =',5.4],['1/4 von 36 =',9],['10 % von 70 =',7],
-  ],
-  schwieriger:[
-    ['1248 + 2976 =',4224],['23 · 17 =',391],['864 : 24 =',36],['4,6 · 3 =',13.8],
-    ['7,2 : 0,8 =',9],['3/5 von 45 =',27],['15 % von 240 =',36],['2,5 km =',2500,'m'],
-  ],
-};
+/* ---------- Aufgabe 1: Brüche (fest: alle Kinder bekommen dieselben) ----------
+   Zahlen als Text: '3/5' wird als Bruch angezeigt, '0.27' als Dezimalzahl. */
+const A1=[
+  {typ:'dez',titel:'Schreibe den Bruch als Dezimalzahl.',bsp:'3/25 = 12/100 = 0.12',
+   items:[['5/4',1.25],['8/50',0.16],['3/5',0.6],['16/100',0.16],['7/10',0.7]]},
+  {typ:'cmp',titel:'Vergleiche die Brüche. Verwende die Zeichen <, > oder =.',bsp:'3/5 > 2/10',
+   items:[['2/7','1/6','>'],['4/9','2/3','<'],['5/2','4/6','>'],['2/3','8/12','='],['3/4','5/6','<']]},
+  {typ:'ord',titel:'Ordne die Zahlen der Grösse nach. Ziehe sie in die Felder.',
+   items:[['3/5','7/10','2/4','1/3','5/12'],['1.4','120/100','21/20','85/60','15/12'],['15/10','0.27','1/3','4/5','6/7']]},
+];
+
+/* ---------- Zweite Aufgabe «leichter»: Brüche (drei Seiten) ---------- */
+const LEICHTER=[
+  {typ:'zuord',titel:'Ordne den Bruch der Dezimalzahl zu.',bsp:'2/10 = 0.2',
+   items:['3/6','1/5','4/20','8/8','3/4'],pool:['0.75','0.2','1','0.5','0.2']},
+  {typ:'kuerz',titel:'Kürze den Bruch so weit wie möglich.',bsp:'4/16 = 1/4',
+   items:[['3/15',[1,5]],['6/9',[2,3]],['6/12',[1,2]],['28/7',[4,1]],['6/30',[1,5]]]},
+  {typ:'bild',titel:'Ordne den Bruch dem passenden Bild zu.',
+   items:[{bild:['kreis',6,[0,1]],sol:'1/3'},{bild:['streifen',5,[0,1]],sol:'2/5'},{bild:['kreis',5,[0,2,3]],sol:'3/5'},{bild:['gitter',3,3,[0,2,4,6,8]],sol:'5/9'}],
+   pool:['1/3','2/5','3/5','5/9']},
+];
+/* ---------- Zweite Aufgabe «gleich schwer» (drei Seiten) ---------- */
+const GLEICH=[
+  {typ:'zuord',titel:'Ordne den Bruch der Dezimalzahl zu.',bsp:'0.15 = 15/100 = 3/20',
+   items:['0.79','0.8','0.35','0.2','0.05'],pool:['7/20','1/20','4/5','79/100','1/5']},
+  {typ:'nenner',titel:'Erweitere oder kürze die Brüche, sodass alle den Nenner 30 haben.',bsp:'4/60 = 2/30',nenner:30,
+   items:[['8/15',16],['4/6',20],['3/5',18],['12/90',4],['11/10',33]]},
+  {typ:'bild',titel:'Ordne die Brüche oder Dezimalzahlen den Bildern zu. Eine Zahl bleibt übrig.',
+   items:[{bild:['kreis',8,[0,1,4,5]],sol:'1/2'},{bild:['gitter',2,3,[0,3]],sol:'1/3'},{bild:['kreis',4,[0]],sol:'0.25'},{bild:['gitter',3,3,[0,4,5,8]],sol:'4/9'}],
+   pool:['1/2','1/3','0.25','4/9','4/6']},
+];
+
+/* ---------- Zweite Aufgabe «schwieriger» (drei Seiten) ---------- */
+const SCHWIERIGER=[
+  {typ:'ord',titel:'Ordne der Grösse nach. Das Grösste kommt nach rechts.',
+   items:[['6/7','10/9','0.6','1.2','5/13'],['14/14','1/16','19/17','12/13','3/15']]},
+  {typ:'zuord',titel:'Rechne die Brüche zusammen und ziehe die passende Lösung in das Feld.',bsp:'3/5 + 1/5 = 4/5',
+   items:['1/2 + 1/4','1/3 + 1/3','3/6 + 2/6','11/10 + 1/10','1/5 + 1/5'],pool:['5/6','2/5','3/4','12/10','2/3']},
+  {typ:'bild',trenn:true,titel:'Ordne die Zahlen und Brüche den Bildern zu. Zwei Zahlen bleiben übrig.',
+   items:[{bild:[['kreis',4,[0,1,2,3]],['kreis',4,[0,1]]],sol:'1 1/2'},{bild:[['gitter',3,2,[0]],['gitter',3,2,[0,1,2,3,4,5]]],sol:'7/6'},
+          {bild:[['kreis',6,[0,1,2,3,4,5]],['stueck',6,2]],sol:'1 2/6'},{bild:['gitter',4,8,[0,2,4,6,25,27,29,31],1.8],sol:'1/4'}],
+   pool:['1 1/2','7/6','1 2/6','1/4','2/6','8/4']},
+];
+const PAGED={a1:A1,leichter:LEICHTER,gleich:GLEICH,schwieriger:SCHWIERIGER};
 
 const CHOICES=[
-  {key:'leichter',   wert:1,title:'Leichter',      bsp:'z. B. 45 + 38',     sub:'Einfachere Rechnungen'},
-  {key:'gleich',     wert:2,title:'Gleich schwer', bsp:'z. B. 427 + 389',   sub:'Ähnlich wie vorher'},
-  {key:'schwieriger',wert:3,title:'Schwieriger',   bsp:'z. B. 23 · 17',     sub:'Anspruchsvollere Rechnungen'},
+  {key:'leichter',   wert:1,title:'Leichter',      bsp:'z. B. 2/10 = 0.2',  sub:'Brüche zuordnen und kürzen'},
+  {key:'gleich',     wert:2,title:'Gleich schwer', bsp:'z. B. 0.15 = 3/20', sub:'Brüche zuordnen und erweitern'},
+  {key:'schwieriger',wert:3,title:'Schwieriger',   bsp:'z. B. 1/2 + 1/4',   sub:'Brüche ordnen und addieren'},
 ];
 const CH=Object.fromEntries(CHOICES.map(c=>[c.key,c]));
 
@@ -433,8 +484,8 @@ async function deleteRecord(id){
 
 /* ---------- Navigation ---------- */
 const $=id=>document.getElementById(id);
-const SCREENS=['links','setup','intro1','math','feedback','choice','done','results'];
-const KID=new Set(['intro1','math','feedback','choice','done']);
+const SCREENS=['links','setup','intro1','task','feedback','choice','done','results'];
+const KID=new Set(['intro1','task','feedback','choice','done']);
 function show(name){
   SCREENS.forEach(s=>$('s-'+s).hidden=s!==name);
   const kid=KID.has(name);
@@ -459,48 +510,147 @@ $('start').onclick=()=>{
   sess={gruppe,klasse,kuerzel,probe:false,id:null};
   show('intro1');
 };
-$('go1').onclick=()=>startMath('a1');
+$('go1').onclick=()=>startPaged('a1');
+
+/* ---------- Aufgaben mit mehreren Seiten (Aufgabe 1 und «leichter») ---------- */
+const val=t=>String(t).split('+').reduce((sum,teil)=>sum+teil.trim().split(/\s+/).reduce((x,z)=>{const [a,b]=z.split('/');return x+(b===undefined?Number(a):Number(a)/Number(b))},0),0);
+const expr=t=>String(t).split(' ').map(fr).join(' ');
+const fr=t=>{const [a,b]=String(t).split('/');return b===undefined?esc(a):`<span class="frac"><span>${esc(a)}</span><span>${esc(b)}</span></span>`};
+const same=(a,b)=>Math.abs(val(a)-val(b))<1e-9;
+// Bilder für «Ordne den Bruch dem Bild zu»: Kreis, Streifen oder 3×3-Gitter mit eingefärbten Teilen.
+// Gitter: ['gitter', Zeilen, Spalten, eingefärbte Felder, Höhe/Breite der Häuschen (optional)]
+function bildSVG(b){
+  const teile=Array.isArray(b[0])?b:[b],F='#F0A070',L='#4F6578';
+  // Jeder Teil wird ab x=ox gezeichnet und gibt seine Breite zurück.
+  const eins=([form,n,a,c,h],ox)=>{
+    let x='',w=100;const on=i=>(form==='gitter'?c:a).includes(i)?F:'#fff';const hoch=h||1;
+    if(form==='kreis'||form==='stueck'){
+      const pt=v=>[ox+50+44*Math.cos(v),50+44*Math.sin(v)].map(q=>q.toFixed(2)).join(' ');
+      const k=form==='stueck'?a:n;
+      for(let i=0;i<k;i++){const a0=-Math.PI/2+2*Math.PI*i/n,a1=a0+2*Math.PI/n;x+=`<path d="M${ox+50} 50 L${pt(a0)} A44 44 0 0 1 ${pt(a1)} Z" fill="${form==='stueck'?F:on(i)}" stroke="${L}" stroke-width="2" stroke-linejoin="round"/>`}
+    }else if(form==='streifen'){
+      const z=88/n;for(let i=0;i<n;i++)x+=`<rect x="${ox+6+i*z}" y="30" width="${z}" height="40" fill="${on(i)}" stroke="${L}" stroke-width="2"/>`;
+    }else{
+      const rows=n,cols=a,z=Math.min(28,84/rows/hoch),zh=z*hoch;w=Math.max(100,cols*z+16);
+      const x0=ox+(w-z*cols)/2,y0=50-zh*rows/2;
+      for(let i=0;i<rows*cols;i++)x+=`<rect x="${(x0+(i%cols)*z).toFixed(2)}" y="${(y0+Math.floor(i/cols)*zh).toFixed(2)}" width="${z.toFixed(2)}" height="${zh.toFixed(2)}" fill="${on(i)}" stroke="${L}" stroke-width="2"/>`;
+    }
+    return {x,w};
+  };
+  let ox=0,inhalt='';
+  teile.forEach((t,i)=>{const r=eins(t,ox);inhalt+=r.x;ox+=r.w+10});
+  const w=ox-10;
+  return `<svg viewBox="0 0 ${w} 100" style="max-width:${(110*w/100).toFixed(0)}px" role="img" aria-label="Bild">${inhalt}</svg>`;
+}
+let ps=null,drag=null;
+function startPaged(key){
+  ps={key,pages:PAGED[key],page:0,t0:Date.now(),dnd:{}};
+  const graded=key==='a1',b=$('t-banner');b.className='banner '+(graded?'graded':'free');
+  b.textContent=graded?'Diese Aufgabe wird bewertet':'Diese Aufgabe wird nicht bewertet';
+  const grp=(g,items,n)=>{ps.dnd[g]={items,slots:Array(n).fill(null),sel:null};return g};
+  $('t-pages').innerHTML=ps.pages.map((P,pi)=>{
+    const bsp=P.bsp?`<div class="example">Beispiel: ${expr(P.bsp)}</div>`:'';
+    let body='';
+    if(P.typ==='dez')body=`<div class="mathlist">${P.items.map(([q],i)=>`<label class="task"><span class="nr">${i+1}.</span><span class="q">${fr(q)} =</span><input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" enterkeyhint="next" aria-label="Ergebnis Aufgabe ${i+1}"><span class="u"></span></label>`).join('')}</div>`;
+    if(P.typ==='cmp')body=`<div class="mathlist">${P.items.map(([a,c],i)=>`<div class="task cmp"><span class="nr">${i+1}.</span><span class="cmpq">${fr(a)}<select aria-label="Zeichen Aufgabe ${i+1}"><option value="">?</option><option>&lt;</option><option>&gt;</option><option>=</option></select>${fr(c)}</span></div>`).join('')}</div>`;
+    if(P.typ==='kuerz')body=`<div class="mathlist">${P.items.map(([q],i)=>`<div class="task cmp"><span class="nr">${i+1}.</span><span class="cmpq">${fr(q)} = <span class="fracin"><input type="text" inputmode="numeric" autocomplete="off" aria-label="Zähler Aufgabe ${i+1}"><i></i><input type="text" inputmode="numeric" autocomplete="off" aria-label="Nenner Aufgabe ${i+1}"></span></span></div>`).join('')}</div>`;
+    if(P.typ==='ord')body=P.items.map((row,ri)=>`<div class="order" id="dnd-${grp(pi+'-'+ri,row,5)}"><div class="pool"></div><div class="slotlab"><span>kleinste</span><span>grösste</span></div><div class="slots">${[0,1,2,3,4].map(si=>`<div class="slot" data-si="${si}"></div>`).join('')}</div></div>`).join('');
+    if(P.typ==='nenner')body=`<div class="mathlist">${P.items.map(([q],i)=>`<div class="task cmp"><span class="nr">${i+1}.</span><span class="cmpq">${fr(q)} = <span class="fracin"><input type="text" inputmode="numeric" autocomplete="off" aria-label="Zähler Aufgabe ${i+1}"><i></i><span>${P.nenner}</span></span></span></div>`).join('')}</div>`;
+    if(P.typ==='zuord')body=`<div class="order" id="dnd-${grp(pi+'-0',P.pool,P.items.length)}"><div class="pool"></div><div class="mathlist" style="max-width:none">${P.items.map((q,i)=>`<div class="task cmp"><span class="nr">${i+1}.</span><span class="cmpq">${expr(q)} = <span class="slot" data-si="${i}"></span></span></div>`).join('')}</div></div>`;
+    if(P.typ==='bild')body=`<div class="order" id="dnd-${grp(pi+'-0',P.pool,P.items.length)}"><div class="pool"></div><div class="pics${P.trenn?' trenn':''}">${P.items.map((it,i)=>{const sv=bildSVG(it.bild),vw=+sv.match(/viewBox="0 0 ([\d.]+)/)[1];return `<div class="pic"${P.trenn?` style="flex:${vw} 1 0"`:''}>${sv}<span class="slot" data-si="${i}"></span></div>`}).join('')}</div></div>`;
+    return `<div class="a1page" data-page="${pi}"${pi?' hidden':''}><h2>${P.titel}</h2>${bsp}<div style="width:100%;max-width:640px;display:flex;flex-direction:column;gap:12px">${body}</div></div>`;
+  }).join('');
+  const inputs=[...$('t-pages').querySelectorAll('input')];
+  inputs.forEach((el,i)=>el.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();const nx=inputs[i+1];if(nx&&nx.closest('.a1page')===el.closest('.a1page'))nx.focus();else el.blur()}}));
+  Object.entries(ps.dnd).forEach(([g,R])=>{
+    const box=$('dnd-'+g);
+    box.querySelectorAll('.slot').forEach(sl=>sl.onclick=e=>{if(e.target.closest('.chip')||R.sel==null)return;dndPlace(g,R.sel,+sl.dataset.si)});
+    box.querySelector('.pool').onclick=e=>{if(e.target.closest('.chip')||R.sel==null)return;dndPlace(g,R.sel,null)};
+    dndRender(g);
+  });
+  tPage(0);show('task');
+}
+function tPage(p){
+  ps.page=p;
+  document.querySelectorAll('.a1page').forEach(el=>el.hidden=+el.dataset.page!==p);
+  $('t-step').textContent=`Teil ${p+1} von ${ps.pages.length}`;
+  $('t-next').textContent=p<ps.pages.length-1?'Weiter':'Ich bin fertig';
+  window.scrollTo(0,0);
+}
+$('t-next').onclick=()=>{if(ps.page<ps.pages.length-1)tPage(ps.page+1);else finishPaged()};
+
+// Karten: ziehen oder antippen und dann ein Feld antippen.
+function dndRender(g){
+  const R=ps.dnd[g],box=$('dnd-'+g),inSlot=new Set(R.slots.filter(x=>x!=null));
+  const chip=ci=>`<span class="chip${R.sel===ci?' selected':''}" data-g="${g}" data-ci="${ci}">${expr(R.items[ci])}</span>`;
+  box.querySelector('.pool').innerHTML=R.items.map((_,ci)=>inSlot.has(ci)?'':chip(ci)).join('');
+  box.querySelectorAll('.slot').forEach((sl,si)=>sl.innerHTML=R.slots[si]!=null?chip(R.slots[si]):'');
+  box.querySelectorAll('.chip').forEach(c=>c.addEventListener('pointerdown',chipDown));
+}
+function dndPlace(g,ci,si){
+  const R=ps.dnd[g],from=R.slots.indexOf(ci);
+  if(si===null){if(from>=0)R.slots[from]=null}
+  else{const other=R.slots[si];if(from>=0)R.slots[from]=other;R.slots[si]=ci}
+  R.sel=null;dndRender(g);
+}
+function chipDown(e){
+  const c=e.currentTarget;e.preventDefault();
+  drag={c,g:c.dataset.g,ci:+c.dataset.ci,x:e.clientX,y:e.clientY,moved:false,ghost:null};
+  try{c.setPointerCapture(e.pointerId)}catch(_){}
+  c.addEventListener('pointermove',chipMove);c.addEventListener('pointerup',chipUp);c.addEventListener('pointercancel',chipUp);
+}
+function chipMove(e){
+  if(!drag)return;
+  if(!drag.moved){if(Math.hypot(e.clientX-drag.x,e.clientY-drag.y)<8)return;drag.moved=true;drag.ghost=drag.c.cloneNode(true);drag.ghost.classList.add('ghost');document.body.appendChild(drag.ghost);drag.c.style.opacity='.3'}
+  drag.ghost.style.left=e.clientX+'px';drag.ghost.style.top=e.clientY+'px';
+}
+function chipUp(e){
+  const d=drag;drag=null;if(!d)return;
+  const R=ps.dnd[d.g];
+  if(d.moved){
+    d.ghost.remove();
+    const t=e.type==='pointerup'&&document.elementFromPoint?document.elementFromPoint(e.clientX,e.clientY):null;
+    const box=t&&t.closest('.order');
+    if(box&&box.id==='dnd-'+d.g){const sl=t.closest('.slot');if(sl)return dndPlace(d.g,d.ci,+sl.dataset.si);if(t.closest('.pool'))return dndPlace(d.g,d.ci,null)}
+    return dndRender(d.g);
+  }
+  const si=R.slots.indexOf(d.ci);
+  if(R.sel!=null&&R.sel!==d.ci&&si>=0)return dndPlace(d.g,R.sel,si);
+  R.sel=R.sel===d.ci?null:d.ci;dndRender(d.g);
+}
+function scorePaged(){
+  let richtig=0,ausgefuellt=0,leer=0;
+  ps.pages.forEach((P,pi)=>{
+    const pg=document.querySelector(`.a1page[data-page="${pi}"]`),inputs=[...pg.querySelectorAll('input')],sels=[...pg.querySelectorAll('select')];
+    if(P.typ==='dez')P.items.forEach(([,sol],i)=>{leer++;const v=inputs[i].value.trim();if(v)ausgefuellt++;const x=parseNum(v);if(x!==null&&Math.abs(x-sol)<1e-9)richtig++});
+    if(P.typ==='cmp')P.items.forEach(([,,sol],i)=>{leer++;if(sels[i].value)ausgefuellt++;if(sels[i].value===sol)richtig++});
+    if(P.typ==='kuerz')P.items.forEach(([,[z,n]],i)=>{leer++;const a=inputs[2*i].value.trim(),b=inputs[2*i+1].value.trim();if(a||b)ausgefuellt++;
+      if(parseNum(a)===z&&(parseNum(b)===n||(n===1&&b==='')))richtig++});
+    if(P.typ==='nenner')P.items.forEach(([,sol],i)=>{leer++;const v=inputs[i].value.trim();if(v)ausgefuellt++;if(parseNum(v)===sol)richtig++});
+    if(P.typ==='ord')P.items.forEach((_,ri)=>{const R=ps.dnd[pi+'-'+ri];leer++;if(R.slots.every(x=>x!=null)){ausgefuellt++;const v=R.slots.map(ci=>val(R.items[ci]));if(v.every((x,i)=>!i||x>v[i-1]))richtig++}});
+    if(P.typ==='zuord'||P.typ==='bild'){const R=ps.dnd[pi+'-0'];P.items.forEach((it,i)=>{leer++;const ci=R.slots[i];if(ci!=null){ausgefuellt++;if(same(R.items[ci],P.typ==='bild'?it.sol:it))richtig++}})}
+  });
+  return {leer,ausgefuellt,richtig,zeitSek:Math.round((Date.now()-ps.t0)/1000)};
+}
+function finishPaged(){
+  const s=scorePaged();
+  if(ps.key!=='a1')return finishTask2({typ:'brüche '+ps.key,zeitSek:s.zeitSek,ergebnis:`${s.richtig}/${s.leer} richtig`,geloest:s.richtig===s.leer});
+  const note=noteFor(s.richtig/s.leer),b=bildFor(note);
+  sess.a1={...s,note,bild:BILD[b]};
+  $('fb').innerHTML=sess.gruppe==='note'?`<div class="grade" aria-label="Note ${note}">${String(note)}</div>`:`<div class="faceBox">${faceSVG(b)}</div>`;
+  $('fb').classList.remove('fade');void $('fb').offsetWidth;$('fb').classList.add('fade');
+  show('feedback');
+}
 
 // Antwort lesen: 6,25 / 6.25 / 4'224 / 4 224 sind alle gültig.
 function parseNum(v){v=String(v).trim().replace(/[\s'’]/g,'').replace(',','.');return /^-?(\d+\.?\d*|\.\d+)$/.test(v)?Number(v):null}
-let ms=null;
-function startMath(lvl){
-  ms={lvl,items:MATH[lvl],t0:Date.now()};
-  const graded=lvl==='a1';
-  const b=$('m-banner');b.className='banner '+(graded?'graded':'free');
-  b.textContent=graded?'Diese Aufgabe wird bewertet':'Diese Aufgabe wird nicht bewertet';
-  const list=$('mathlist');list.innerHTML='';
-  ms.items.forEach(([q,,u],i)=>{
-    const row=document.createElement('label');row.className='task';
-    row.innerHTML=`<span class="nr">${i+1}.</span><span class="q">${q}</span><input type="text" inputmode="decimal" autocomplete="off" spellcheck="false" enterkeyhint="next" aria-label="Ergebnis Aufgabe ${i+1}"><span class="u">${u||''}</span>`;
-    list.appendChild(row);
-  });
-  const inputs=[...list.querySelectorAll('input')];
-  inputs.forEach((el,i)=>el.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();if(inputs[i+1])inputs[i+1].focus();else el.blur()}}));
-  disarm($('m-done'));show('math');
-}
-function scoreMath(){
-  const inputs=[...$('mathlist').querySelectorAll('input')];let richtig=0,ausgefuellt=0;
-  ms.items.forEach(([,sol],i)=>{const v=inputs[i].value.trim();if(v)ausgefuellt++;const x=parseNum(v);if(x!==null&&Math.abs(x-sol)<1e-9)richtig++});
-  return {leer:ms.items.length,ausgefuellt,richtig,zeitSek:Math.round((Date.now()-ms.t0)/1000)};
-}
-$('m-done').onclick=()=>{
-  const s=scoreMath();
-  if(ms.lvl==='a1'){
-    const note=noteFor(s.richtig/s.leer),b=bildFor(note);
-    sess.a1={...s,note,bild:BILD[b]};
-    $('fb').innerHTML=sess.gruppe==='note'?`<div class="grade" aria-label="Note ${note}">${String(note)}</div>`:`<div class="faceBox">${faceSVG(b)}</div>`;
-    $('fb').classList.remove('fade');void $('fb').offsetWidth;$('fb').classList.add('fade');
-    show('feedback');
-  }else finishTask2({typ:'mathe '+ms.lvl,zeitSek:s.zeitSek,ergebnis:`${s.richtig}/${s.leer} richtig`,geloest:s.richtig===s.leer});
-};
 $('go-choice').onclick=()=>{renderChoices();show('choice');sess.tWahl=Date.now()};
 
 function renderChoices(){
   const box=$('choices');box.innerHTML='';
   CHOICES.forEach(c=>{
     const b=document.createElement('button');b.type='button';b.className='choice';b.id='ch-'+c.key;
-    b.innerHTML=`<b>${c.title}</b><span class="ex">${c.bsp}</span><small>${c.sub}</small>`;
+    b.innerHTML=`<b>${c.title}</b><span class="ex">${expr(c.bsp)}</span><small>${c.sub}</small>`;
     b.onclick=()=>choose(c);box.appendChild(b);
   });
 }
@@ -508,7 +658,7 @@ async function choose(c){
   document.querySelectorAll('.choice').forEach(x=>x.disabled=true);
   sess.rec={id:'r'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),datum:new Date().toISOString(),klasse:sess.klasse,kuerzel:sess.kuerzel,gruppe:sess.gruppe,probe:sess.probe,a1:sess.a1,wahl:c.key,wert:c.wert,wahlZeitSek:Math.round((Date.now()-sess.tWahl)/100)/10,a2:null};
   queueSave(sess.rec);
-  startMath(c.key);
+  startPaged(c.key);
 }
 function finishTask2(a2){
   sess.rec.a2=a2;queueSave(sess.rec);
