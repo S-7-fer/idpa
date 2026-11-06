@@ -29,16 +29,16 @@ b{font-weight:500}
 .muted{color:var(--muted)}
 .small{font-size:.88rem}
 
-header.top{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-block:18px 12px;border-bottom:1px solid var(--line);margin-bottom:32px}
-header.top.kidhead{border-bottom:0;justify-content:flex-end;margin-bottom:12px}
-.brand{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+header.top{position:relative;display:flex;align-items:baseline;justify-content:center;gap:12px;flex-wrap:wrap;padding-block:18px 12px;border-bottom:1px solid var(--line);margin-bottom:32px;min-height:56px}
+header.top.kidhead{border-bottom:0;margin-bottom:12px}
+.brand{display:flex;align-items:baseline;justify-content:center;gap:12px;flex-wrap:wrap;text-align:center}
 .brand h1{font-size:1.1rem;font-weight:400;letter-spacing:.04em;color:var(--ink)}
 .levels{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
 .levels button{font:inherit;font-size:.95rem;padding:8px 18px;border:1px solid var(--line-mid);border-radius:var(--radius);background:var(--card);color:var(--ink);cursor:pointer}
 .levels button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--card)}
 .btnrow{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
 .cell.wrong{color:var(--red);background:#F6E3DF}
-.abort{border:0;background:transparent;color:var(--muted);opacity:.55;font:inherit;font-size:.78rem;padding:4px 8px;cursor:pointer}
+.abort{position:absolute;right:0;top:50%;transform:translateY(-50%);border:0;background:transparent;color:var(--muted);opacity:.55;font:inherit;font-size:.78rem;padding:4px 8px;cursor:pointer}
 .abort.armed{color:var(--red);opacity:1}
 
 .stack{display:flex;flex-direction:column;gap:24px}
@@ -103,7 +103,7 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ochre);outline-offs
 .choice b{font-size:1.15rem;font-weight:400;color:var(--ink)}
 .choice small{color:var(--muted);font-size:.88rem}
 .choice .ex{font-size:1.2rem;font-weight:400;font-variant-numeric:tabular-nums;color:var(--text)}
-.mathlist{display:grid;gap:10px;width:100%;max-width:560px}
+.mathlist{display:grid;gap:10px;width:100%;max-width:560px;margin:0 auto}
 .task{display:grid;grid-template-columns:1.6em 1fr 7em 2.2em;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:10px 14px;text-align:left}
 .task .nr{color:var(--muted);font-size:.85rem}
 .task .q{font-size:1.2rem;font-weight:400;font-variant-numeric:tabular-nums}
@@ -336,7 +336,7 @@ function makeSudoku({n,br,bc,clues,seed}){
 const A1=[
   {typ:'dez',titel:'Schreibe den Bruch als Dezimalzahl.',bsp:'3/25 = 12/100 = 0.12',
    items:[['5/4',1.25],['8/50',0.16],['3/5',0.6],['16/100',0.16],['7/10',0.7]]},
-  {typ:'cmp',titel:'Vergleiche die Brüche. Verwende die Zeichen <, > oder =.',bsp:'3/5 > 2/10',
+  {typ:'cmp',titel:'Vergleiche die Brüche. Verwende die Zeichen <, > oder =',bsp:'3/5 > 2/10',
    items:[['2/7','1/6','>'],['4/9','2/3','<'],['5/2','4/6','>'],['2/3','8/12','='],['3/4','5/6','<']]},
   {typ:'ord',titel:'Ordne die Zahlen der Grösse nach. Ziehe sie in die Felder.',
    items:[['3/5','7/10','2/4','1/3','5/12'],['1.4','120/100','21/20','85/60','15/12'],['15/10','0.27','1/3','4/5','6/7']]},
@@ -811,7 +811,7 @@ function csv(){
   const q=v=>{v=v==null?'':String(v);return /[;"\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
   const lines=rows.slice().sort((a,b)=>(a.datum||'').localeCompare(b.datum||'')).map(r=>{const a=r.a1||{},b=r.a2||{};
     return [r.datum,r.klasse,r.kuerzel,r.gruppe,r.probe?1:0,a.leer,a.richtig,a.ausgefuellt,a.note,a.bild,a.zeitSek,r.wahl,r.wert,b.typ,b.ergebnis,b.geloest==null?'':b.geloest?1:0,b.zeitSek,r.wahlZeitSek].map(q).join(';')});
-  return '﻿'+[head.join(';'),...lines].join('\n');
+  return '\uFEFF'+[head.join(';'),...lines].join('\n');
 }
 $('csv').onclick=()=>{
   const blob=new Blob([csv()],{type:'text/csv;charset=utf-8'}),a=document.createElement('a');
