@@ -203,7 +203,7 @@ td.num{text-align:right}
       <div class="card stack" style="max-width:560px;margin:0 auto;width:100%">
         <div class="row">
           <label class="f">Klasse<input type="text" id="klasse" placeholder="z. B. 6" autocomplete="off"></label>
-          <label class="f">Kürzel des Kindes<input type="text" id="kuerzel" placeholder="z. B. K07" autocomplete="off"></label>
+          <label class="f">Prüfungsnummer<input type="text" id="kuerzel" placeholder="X01" autocomplete="off"></label>
         </div>
         <div><button class="btn big" id="start">Test starten</button></div>
         <p class="msg" id="setup-msg"></p>
@@ -504,7 +504,7 @@ let sess=null;
 $('start').onclick=()=>{
   const gruppe=MODE;
   const klasse=$('klasse').value.trim(),kuerzel=$('kuerzel').value.trim();
-  if(!kuerzel){setMsg('setup-msg','Bitte ein Kürzel für das Kind eintragen.');$('kuerzel').focus();return}
+  if(!kuerzel){setMsg('setup-msg','Bitte die Prüfungsnummer eintragen.');$('kuerzel').focus();return}
   try{localStorage.setItem('bon_kl',klasse)}catch(e){}
   setMsg('setup-msg','');
   sess={gruppe,klasse,kuerzel,probe:false,id:null};
