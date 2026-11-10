@@ -334,12 +334,12 @@ function makeSudoku({n,br,bc,clues,seed}){
 /* ---------- Aufgabe 1: Brüche (fest: alle Kinder bekommen dieselben) ----------
    Zahlen als Text: '3/5' wird als Bruch angezeigt, '0.27' als Dezimalzahl. */
 const A1=[
-  {typ:'dez',titel:'Schreibe den Bruch als Dezimalzahl.',bsp:'3/25 = 12/100 = 0.12',
-   items:[['5/4',1.25],['8/50',0.16],['3/5',0.6],['16/100',0.16],['7/10',0.7]]},
-  {typ:'cmp',titel:'Vergleiche die Brüche. Verwende die Zeichen <, > oder =',bsp:'3/5 > 2/10',
-   items:[['2/7','1/6','>'],['4/9','2/3','<'],['5/2','4/6','>'],['2/3','8/12','='],['3/4','5/6','<']]},
   {typ:'ord',titel:'Ordne die Zahlen der Grösse nach. Ziehe sie in die Felder.',
    items:[['3/5','7/10','2/4','1/3','5/12'],['1.4','120/100','21/20','85/60','15/12'],['15/10','0.27','1/3','4/5','6/7']]},
+  {typ:'cmp',titel:'Vergleiche die Brüche. Verwende die Zeichen <, > oder =',bsp:'3/5 > 2/10',
+   items:[['2/7','1/6','>'],['4/9','2/3','<'],['5/2','4/6','>'],['2/3','8/12','='],['3/4','5/6','<']]},
+  {typ:'dez',titel:'Schreibe den Bruch als Dezimalzahl.',bsp:'3/25 = 12/100 = 0.12',
+   items:[['5/4',1.25],['8/50',0.16],['3/5',0.6],['16/100',0.16],['7/10',0.7]]},
 ];
 
 /* ---------- Zweite Aufgabe «leichter»: Brüche (drei Seiten) ---------- */
