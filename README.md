@@ -4,19 +4,16 @@ Online-Werkzeug für das IDPA-Experiment: Schülerinnen und Schüler der 3./4. P
 bekommen je nach Gruppe ein **Bild** (Smiley) oder eine **Note** und wählen danach die Schwierigkeit der
 zweiten, nicht bewerteten Aufgabe (leichter = 1, gleich schwer = 2, schwieriger = 3).
 
-Die Ergebnisse landen in einer Google-Tabelle. Die Kinder brauchen kein Konto.
-
 ## Links
 
 Nach der Einrichtung (unten) ist die Seite so erreichbar:
 
 | Zweck | Link |
 |---|---|
-| Gruppe Bild | `https://<dein-github-name>.github.io/bild-oder-note/#bild` |
-| Gruppe Note | `https://<dein-github-name>.github.io/bild-oder-note/#note` |
-| Auswertung | `https://<dein-github-name>.github.io/bild-oder-note/#auswertung` |
+| Gruppe Bild | `https://S-7-fer.github.io/idpa/#bild` |
+| Gruppe Note | `https://S-7-fer.github.io/idpa/#note` |
+| Auswertung | `https://S-7-fer.github.io/idpa/#auswertung` |
 
-Für ein neues Kind am selben Gerät den Link einfach neu laden.
 
 ## Einrichtung
 
